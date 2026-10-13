@@ -12,7 +12,7 @@ import { demoResults } from "./demoProfiles";
 
 export const NORMAL_SCORE_TITLE = "Your score vs demo normal scores";
 export const NORMAL_SCORE_NOTE = "FICTIONAL DEMO REFERENCE — these made-up normal scores illustrate the comparison only. They are not measured healthy-person averages, medically validated norms or target scores, and do not affect the screening outcome.";
-export const NORMAL_SCORE_COLUMN = "Normal score (fictional demo)";
+export const NORMAL_SCORE_COLUMN = "Normal score";
 
 /** Illustrative comparator only; never used by screening or reference datasets. */
 export function normalScoreComparison(tests: TestScore[]) {
