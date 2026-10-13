@@ -1,45 +1,48 @@
-name: Deploy Tremor to GitHub Pages
+name: Build static Tremor site
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "docs/**"
   workflow_dispatch:
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 concurrency:
-  group: pages
+  group: static-site-build
   cancel-in-progress: true
 jobs:
-  build:
+  build-static:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Check project files
-        run: |
-          if [ ! -f package.json ]; then
-            echo "The Tremor app source is not in the repository root yet."
-            echo "Upload/extract the prepared tremor_github_pages.zip contents into the repository, then push again."
-            exit 1
-          fi
-      - uses: actions/setup-node@v4
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: 22
-      - run: npm install --legacy-peer-deps --no-audit --no-fund
-      - run: npm run build
+          bun-version: latest
+      - name: Install locked dependencies
+        run: bun install --frozen-lockfile
+      - name: Build static SPA for GitHub Pages
+        run: bun run build
         env:
           GITHUB_ACTIONS: "true"
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: .output/public
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Prepare branch deployment files
+        run: |
+          test -f .output/public/index.html
+          rm -rf docs
+          mkdir -p docs
+          cp -a .output/public/. docs/
+          # GitHub Pages uses this as a fallback for client-side routes.
+          cp docs/index.html docs/404.html
+          touch docs/.nojekyll
+      - name: Commit static site to main/docs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          if git diff --cached --quiet; then
+            echo "Static site is already up to date."
+            exit 0
+          fi
+          git commit -m "Build static site for GitHub Pages"
+          git push
