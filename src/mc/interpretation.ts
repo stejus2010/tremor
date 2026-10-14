@@ -96,7 +96,7 @@ export const TEST_EXPLANATIONS: Record<ScoredTestId, TestExplanation> = {
     ],
   },
   voice: {
-    measures: "Selected features of your voice while you held an “ahhh” sound: how much your pitch varied (pitch CV, %) and how much your loudness varied (level SD, dB).",
+    measures: "Selected features of your voice while reading a short sentence: how much your pitch varied (pitch CV, %) and how much your loudness varied (level SD, dB).",
     meaning: `A higher score means less steady pitch and loudness. Pitch CV is converted as 100 × CV ÷ ${SCORING_REFERENCE.voiceF0Cv}% and loudness SD as 100 × SD ÷ ${SCORING_REFERENCE.voiceLevelSd} dB (each capped at 100), then averaged.`,
     scaleInfo: `${COMMON_SCALE} Voice: higher = more variation in pitch and loudness. ${SCORING_REFERENCE.voiceF0Cv}% pitch CV and ${SCORING_REFERENCE.voiceLevelSd} dB loudness SD each map to 100.`,
     limitations: [
@@ -114,7 +114,7 @@ export const TEST_EXPLANATIONS: Record<ScoredTestId, TestExplanation> = {
     ],
   },
   tap: {
-    measures: "The timing of your alternating taps. The tapping interval is the time between taps; interval variability (CV, %) shows how uneven those intervals were.",
+    measures: "The timing of your responses to randomly lit targets. The tapping interval is the time between taps; interval variability (CV, %) shows how uneven those intervals were.",
     meaning: `A higher score means less regular tapping rhythm (greater timing variability) — it does not measure speed. The score is 100 × interval CV ÷ ${SCORING_REFERENCE.tapItiCv}% (capped at 100).`,
     scaleInfo: `${COMMON_SCALE} Tap Challenge: higher = more variable timing between taps. ${SCORING_REFERENCE.tapItiCv}% CV maps to 100.`,
     limitations: [
