@@ -16,11 +16,14 @@ export function TapScreen() {
   const [st, setSt] = useState<"idle" | "running" | "done">("idle");
   const [elapsed, setElapsed] = useState(0);
   const [, force] = useState(0);
-  const [mouseWarn, setMouseWarn] = useState(false);\n  const [litTarget, setLitTarget] = useState<Target>("A");\n  const cueTimer = useRef<number | null>(null);
+  const [mouseWarn, setMouseWarn] = useState(false);
+  const [litTarget, setLitTarget] = useState<Target>("A");
+  const cueTimer = useRef<number | null>(null);
   const [result, setResult] = useState<TestResult | null>(null);
   const [confirm, setConfirm] = useState(false);
 
-  const stopTimer = () => { if (timer.current) clearInterval(timer.current); timer.current = null; if (cueTimer.current) clearTimeout(cueTimer.current); cueTimer.current = null; };\n  const scheduleCue = () => { if (cueTimer.current) clearTimeout(cueTimer.current); cueTimer.current = window.setTimeout(() => { setLitTarget((current) => Math.random() < 0.5 ? (current === "A" ? "B" : "A") : current); scheduleCue(); }, 650 + Math.random() * 850); };
+  const stopTimer = () => { if (timer.current) clearInterval(timer.current); timer.current = null; if (cueTimer.current) clearTimeout(cueTimer.current); cueTimer.current = null; };
+  const scheduleCue = () => { if (cueTimer.current) clearTimeout(cueTimer.current); cueTimer.current = window.setTimeout(() => { setLitTarget((current) => Math.random() < 0.5 ? (current === "A" ? "B" : "A") : current); scheduleCue(); }, 650 + Math.random() * 850); };
   const finish = (dur: number) => { stopTimer(); setResult(analyzeTap(ev.current, dur)); setSt("done"); };
   useEffect(() => {
     const vis = () => { if (document.hidden && timer.current) finish((performance.now() - t0.current) / 1000); };
@@ -33,8 +36,8 @@ export function TapScreen() {
     if (st === "done") return;
     if (e.pointerType === "mouse" && !s.session.demo) { setMouseWarn(true); return; }
     if (st === "idle") {
-      if (target !== "A") return;
-      t0.current = e.timeStamp; ev.current = []; setSt("running");
+      if (target !== litTarget) return;
+      t0.current = e.timeStamp; ev.current = []; setSt("running"); scheduleCue();
       timer.current = window.setInterval(() => {
         const el = (performance.now() - t0.current) / 1000;
         setElapsed(el);
@@ -42,6 +45,7 @@ export function TapScreen() {
       }, 50);
     }
     ev.current.push({ t: e.timeStamp, target, pointerType: e.pointerType });
+    if (st === "running") setLitTarget(Math.random() < 0.5 ? "A" : "B");
     force((n) => n + 1);
   };
   const reset = () => { stopTimer(); ev.current = []; setElapsed(0); setResult(null); setSt("idle"); };
@@ -49,8 +53,7 @@ export function TapScreen() {
   const next = () => { s.setRaw("tap", { events: ev.current, durationS: Math.min(elapsed, D) || D }); s.go("processing"); };
 
   const { valid, iti } = classifyTaps(ev.current);
-  const expected: Target = valid.at(-1)?.target === "A" ? "B" : "A";
-  const cv = iti.length > 2 ? (100 * sd(iti)) / mean(iti) : null;
+    const cv = iti.length > 2 ? (100 * sd(iti)) / mean(iti) : null;
 
   const target = (t: Target) => (
     <button
