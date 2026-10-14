@@ -77,7 +77,7 @@ export function InfoScreen({ kind }: { kind: "about" | "privacy" }) {
           <>
             <h1 className="text-3xl font-bold">About Tremor</h1>
             <div className="mt-4 space-y-3 text-muted-foreground">
-              <p>Tremor is an experimental, portable movement-assessment prototype. It guides you through four short tasks — hand hold, voice, spiral tracing and alternating taps — and records the features your browser can measure.</p>
+              <p>Tremor is an experimental, portable movement-assessment prototype. It guides you through four short tasks — hand hold, voice, spiral tracing and responses to randomly lit targets — and records the features your browser can measure.</p>
               <p>It is not a diagnostic device. It does not detect, diagnose, rule out or predict Parkinson's disease or any other condition. Clinical validity has not been established.</p>
               <p>The report is designed to support a conversation with a healthcare professional.</p>
             </div>
@@ -104,9 +104,9 @@ export function InstructionsScreen() {
   const s = useSession();
   const tasks = [
     [Hand, "Hand Hold", "Two 15-second phases with the tablet in a standard, supported position."],
-    [Mic, "Voice", "Say “ahhh” at a comfortable volume for about five seconds."],
+    [Mic, "Voice", "Read the displayed sentence aloud at a comfortable, natural pace for about five seconds."],
     [Spline, "Spiral", "Trace the displayed spiral with a finger or stylus."],
-    [MousePointerClick, "Tap Challenge", "Alternate between two targets for 15 seconds."],
+    [MousePointerClick, "Tap Challenge", "Tap whichever target is lit as the highlight changes at random intervals for 15 seconds."],
   ] as const;
   return (
     <Page>
