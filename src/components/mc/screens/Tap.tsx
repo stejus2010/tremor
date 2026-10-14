@@ -23,7 +23,7 @@ export function TapScreen() {
   const [confirm, setConfirm] = useState(false);
 
   const stopTimer = () => { if (timer.current) clearInterval(timer.current); timer.current = null; if (cueTimer.current) clearTimeout(cueTimer.current); cueTimer.current = null; };
-  const scheduleCue = () => { if (cueTimer.current) clearTimeout(cueTimer.current); cueTimer.current = window.setTimeout(() => { setLitTarget((current) => Math.random() < 0.5 ? (current === "A" ? "B" : "A") : current); scheduleCue(); }, 650 + Math.random() * 850); };
+  const scheduleCue = () => { if (cueTimer.current) clearTimeout(cueTimer.current); cueTimer.current = window.setTimeout(() => { setLitTarget(Math.random() < 0.5 ? "A" : "B"); scheduleCue(); }, 500 + Math.random() * 1000); };
   const finish = (dur: number) => { stopTimer(); setResult(analyzeTap(ev.current, dur)); setSt("done"); };
   useEffect(() => {
     const vis = () => { if (document.hidden && timer.current) finish((performance.now() - t0.current) / 1000); };
@@ -45,7 +45,6 @@ export function TapScreen() {
       }, 50);
     }
     ev.current.push({ t: e.timeStamp, target, pointerType: e.pointerType });
-    if (st === "running") setLitTarget(Math.random() < 0.5 ? "A" : "B");
     force((n) => n + 1);
   };
   const reset = () => { stopTimer(); ev.current = []; setElapsed(0); setResult(null); setSt("idle"); };
