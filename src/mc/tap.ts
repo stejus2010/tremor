@@ -10,12 +10,7 @@ export function classifyTaps(events: TapEvent[]) {
   let prev: TapEvent | null = null;
   for (const e of events) {
     if (!e.target) { misses++; continue; }
-    if (prev && prev.target === e.target) {
-      if (e.t - prev.t < CONFIG.tap.doubleTapMs) { repeated++; continue; }
-      altErrors++;
-      prev = e;
-      continue;
-    }
+    if (prev && prev.target === e.target && e.t - prev.t < CONFIG.tap.doubleTapMs) { repeated++; continue; }
     valid.push(e);
     prev = e;
   }
@@ -28,7 +23,7 @@ export function analyzeTap(events: TapEvent[], durationS: number): TestResult {
   const base = {
     id: "tap" as const,
     name: "Tap Challenge",
-    explanation: "Timing between alternating taps on the two targets. Only taps that alternate correctly are counted as valid.",
+    explanation: "Timing between taps while responding to randomly lit targets. Timing consistency is experimental and is not a diagnosis.",
   };
   if (!events.length) return { ...base, status: "not_completed", warnings: ["No taps recorded."], metrics: [] };
   const { valid, misses, repeated, altErrors, iti } = classifyTaps(events);
@@ -39,8 +34,8 @@ export function analyzeTap(events: TapEvent[], durationS: number): TestResult {
 
   let status: TestResult["status"] = "valid";
   if (durationS < C.durationS * 0.8) { status = "invalid"; warnings.push("Test interrupted before 15 seconds."); }
-  if (valid.length < C.minValidTaps) { status = "invalid"; warnings.push("Too few valid alternating taps."); }
-  if (status === "valid" && errFrac > C.maxErrorFrac) { status = "limited"; warnings.push("Many missed or non-alternating taps."); }
+  if (valid.length < C.minValidTaps) { status = "invalid"; warnings.push("Too few valid taps."); }
+  if (status === "valid" && errFrac > C.maxErrorFrac) { status = "limited"; warnings.push("Many missed taps."); }
   if (repeated) warnings.push(`${repeated} accidental double contact(s) ignored.`);
 
   return {
@@ -55,7 +50,7 @@ export function analyzeTap(events: TapEvent[], durationS: number): TestResult {
       { label: "Interval SD", value: iti.length > 2 ? sd(iti) : null, unit: "ms", digits: 0 },
       { label: "Interval variability (CV)", value: iti.length > 2 ? (100 * sd(iti)) / mean(iti) : null, unit: "%", digits: 1 },
       { label: "Speed change (2nd vs 1st half)", value: iti.length >= 6 ? (100 * (second - first)) / first : null, unit: "% interval", digits: 0 },
-      { label: "Alternation errors", value: altErrors, unit: "", digits: 0 },
+      
       { label: "Missed taps", value: misses, unit: "", digits: 0 },
     ],
   };
