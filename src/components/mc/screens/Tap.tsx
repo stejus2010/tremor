@@ -16,11 +16,11 @@ export function TapScreen() {
   const [st, setSt] = useState<"idle" | "running" | "done">("idle");
   const [elapsed, setElapsed] = useState(0);
   const [, force] = useState(0);
-  const [mouseWarn, setMouseWarn] = useState(false);
+  const [mouseWarn, setMouseWarn] = useState(false);\n  const [litTarget, setLitTarget] = useState<Target>("A");\n  const cueTimer = useRef<number | null>(null);
   const [result, setResult] = useState<TestResult | null>(null);
   const [confirm, setConfirm] = useState(false);
 
-  const stopTimer = () => { if (timer.current) clearInterval(timer.current); timer.current = null; };
+  const stopTimer = () => { if (timer.current) clearInterval(timer.current); timer.current = null; if (cueTimer.current) clearTimeout(cueTimer.current); cueTimer.current = null; };\n  const scheduleCue = () => { if (cueTimer.current) clearTimeout(cueTimer.current); cueTimer.current = window.setTimeout(() => { setLitTarget((current) => Math.random() < 0.5 ? (current === "A" ? "B" : "A") : current); scheduleCue(); }, 650 + Math.random() * 850); };
   const finish = (dur: number) => { stopTimer(); setResult(analyzeTap(ev.current, dur)); setSt("done"); };
   useEffect(() => {
     const vis = () => { if (document.hidden && timer.current) finish((performance.now() - t0.current) / 1000); };
@@ -55,12 +55,12 @@ export function TapScreen() {
   const target = (t: Target) => (
     <button
       type="button"
-      aria-label={`Target ${t === "A" ? "1" : "2"}${expected === t && st !== "done" ? ", tap next" : ""}`}
+      aria-label={`Target ${t === "A" ? "1" : "2"}${litTarget === t && st !== "done" ? ", lit target" : ""}`}
       onPointerDown={(e) => { e.stopPropagation(); handle(e, t); }}
       className={cn(
         "aspect-square w-full max-w-56 rounded-full transition-transform active:scale-95",
         t === "A" ? "bg-cyan" : "bg-violet",
-        expected === t && st !== "done" ? (t === "A" ? "glow-cyan scale-100" : "glow-violet scale-100") : "scale-90 opacity-40",
+        litTarget === t && st !== "done" ? (t === "A" ? "glow-cyan scale-100" : "glow-violet scale-100") : "scale-90 opacity-40",
       )}
     />
   );
@@ -72,7 +72,7 @@ export function TapScreen() {
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-6">
         <div className="min-w-0">
           <h1 className="text-3xl font-bold">Tap Challenge</h1>
-          <p className="mt-2 text-muted-foreground">Tap the two targets alternately, as accurately as possible, for 15 seconds. The timer starts with your first tap on the left target.</p>
+          <p className="mt-2 text-muted-foreground">Tap whichever target is lit as it changes unpredictably. The timer starts when you tap the currently lit target.</p>
         </div>
         <Ring remaining={st === "idle" ? D : Math.max(0, D - elapsed)} total={D} />
       </div>
@@ -83,7 +83,7 @@ export function TapScreen() {
           {target("B")}
         </div>
         <p className="text-center text-sm text-muted-foreground" aria-live="polite">
-          {st === "idle" ? "Tap the cyan target to begin" : st === "running" ? `Next: ${expected === "A" ? "cyan" : "violet"}` : "Test complete"}
+          {st === "idle" ? "Tap the lit target to begin" : st === "running" ? `Tap the lit ${litTarget === "A" ? "cyan" : "violet"} target` : "Test complete"}
         </p>
       </Card>
       <div className="mt-4 grid grid-cols-3 gap-3">
