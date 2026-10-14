@@ -99,7 +99,7 @@ export function analyzeVoice(frames: VoiceFrame[], durationS: number): TestResul
   const base = {
     id: "voice" as const,
     name: "Voice",
-    explanation: "Sustained “ahhh” analysed locally. Volume is relative to the microphone’s full scale (dBFS), not a calibrated sound level.",
+    explanation: "Speech is analysed locally. Volume is relative to the microphone’s full scale (dBFS), not a calibrated sound level.",
   };
   if (!frames.length) return { ...base, status: "not_completed", warnings: ["No audio recorded."], metrics: [] };
   const warnings: string[] = [];
@@ -116,7 +116,7 @@ export function analyzeVoice(frames: VoiceFrame[], durationS: number): TestResul
 
   let status: TestResult["status"] = "valid";
   if (durationS < C.minDurationS) { status = "invalid"; warnings.push("Recording too short or interrupted."); }
-  if (voiced.length < 10 || voicedFrac < C.minVoicedFrac) { status = "invalid"; warnings.push("No sustained voice detected (silence or very quiet)."); }
+  if (voiced.length < 10 || voicedFrac < C.minVoicedFrac) { status = "invalid"; warnings.push("Not enough clear speech detected (silence or very quiet audio)."); }
   if (status === "valid" && voicedFrac < C.goodVoicedFrac) { status = "limited"; warnings.push("Voice detected for only part of the recording."); }
   if (snr != null && snr < C.minSnrDb) { if (status === "valid") status = "limited"; warnings.push("Background noise may be high relative to voice."); }
   if (clip > C.maxClipFrac) { if (status === "valid") status = "limited"; warnings.push("Audio clipping detected — try a softer voice."); }
