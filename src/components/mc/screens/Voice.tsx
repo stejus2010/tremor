@@ -96,7 +96,7 @@ export function VoiceScreen() {
       <TopBar onBack={() => { cleanup(); s.go("arm"); }} />
       <Stepper current={2} />
       <h1 className="text-3xl font-bold">Voice Test</h1>
-      <p className="mt-2 max-w-2xl text-muted-foreground">Take a comfortable breath and say ‘ahhh’ at a steady, comfortable volume for approximately five seconds.</p>
+      <p className="mt-2 max-w-2xl text-muted-foreground">Read this sentence aloud at a comfortable, natural pace: “Today is a good day, and I am speaking clearly.”</p>
       {st === "idle" && <Notice className="mt-4">Tapping the microphone will ask for microphone permission. Audio is analysed on this device and never stored or uploaded.</Notice>}
       {err[st] && <Notice tone="error" className="mt-4">{err[st]}</Notice>}
       <div className="mt-6 grid gap-5 md:grid-cols-[auto_minmax(0,1fr)]">
