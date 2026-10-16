@@ -34,7 +34,7 @@ export function SetupScreen() {
       caffeine,
       ...(caffeine === "yes" ? { caffeineTiming: timing, caffeineDrink: drink } : {}),
     });
-    s.go("instructions");
+    s.go("checklist");
   };
 
   return (
