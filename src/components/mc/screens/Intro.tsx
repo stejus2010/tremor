@@ -110,7 +110,7 @@ export function InstructionsScreen() {
   ] as const;
   return (
     <Page>
-      <TopBar onBack={() => s.go("setup")} />
+      <TopBar onBack={() => s.go("checklist")} />
       <Stepper current={0} />
       <h1 className="text-3xl font-bold">Before we begin</h1>
       <p className="mt-2 text-muted-foreground">You'll complete 4 short tests. The whole assessment takes about 2 minutes.</p>
@@ -133,7 +133,7 @@ export function InstructionsScreen() {
       </Card>
       <Notice className="mt-4">Data is processed locally on this device and is not automatically uploaded. Permissions are requested only when a test starts.</Notice>
       <div className="mt-6 flex justify-end gap-3">
-        <Btn variant="secondary" onClick={() => s.go("setup")}>Edit setup</Btn>
+        <Btn variant="secondary" onClick={() => s.go("checklist")}>Review checklist</Btn>
         <Btn onClick={() => s.go("rest")}>Continue <ArrowRight className="h-5 w-5" /></Btn>
       </div>
     </Page>
