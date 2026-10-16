@@ -3,6 +3,7 @@ import { SessionProvider, useSession } from "@/mc/session";
 import { DemoBanner, Dialog } from "@/components/mc/ui";
 import { InfoScreen, InstructionsScreen, WelcomeScreen } from "@/components/mc/screens/Intro";
 import { SetupScreen } from "@/components/mc/screens/Setup";
+import { ChecklistScreen } from "@/components/mc/screens/Checklist";
 import { HandHoldScreen } from "@/components/mc/screens/HandHold";
 import { VoiceScreen } from "@/components/mc/screens/Voice";
 import { SpiralScreen } from "@/components/mc/screens/Spiral";
@@ -39,6 +40,7 @@ function App() {
       case "about": return <InfoScreen kind="about" />;
       case "privacy": return <InfoScreen kind="privacy" />;
       case "setup": return <SetupScreen />;
+      case "checklist": return <ChecklistScreen />;
       case "instructions": return <InstructionsScreen />;
       case "rest": return <HandHoldScreen key="rest" phase="rest" />;
       case "arm": return <HandHoldScreen key="arm" phase="arm" />;
