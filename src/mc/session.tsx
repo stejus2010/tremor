@@ -10,7 +10,7 @@ import type { TapEvent } from "./tap";
 import type { TestId, TestResult } from "./types";
 
 export type Screen =
-  | "welcome" | "about" | "privacy" | "setup" | "instructions" | "rest" | "arm" | "voice"
+  | "welcome" | "about" | "privacy" | "setup" | "checklist" | "instructions" | "rest" | "arm" | "voice"
   | "spiral" | "tap" | "processing" | "results" | "details" | "report" | "complete";
 
 export interface Raw {
@@ -20,12 +20,16 @@ export interface Raw {
   spiral: SpiralPoint[] | null;
   tap: { events: TapEvent[]; durationS: number } | null;
 }
+export type ChecklistAnswer = "yes" | "no" | "not_sure";
+export type ChecklistAnswers = Record<"dreamEnactment" | "smellLoss" | "constipation" | "movementSlowness" | "caffeineOrMedication", ChecklistAnswer>;
+
 export interface Session {
   id: string;
   startedAt: Date;
   demo: boolean;
   /** Age + caffeine; kept for the whole session, reset only on a new session. */
   context: AssessmentContext | null;
+  checklist: ChecklistAnswers | null;
   raw: Raw;
   skipped: Partial<Record<TestId, boolean>>;
   results: TestResult[] | null;
@@ -40,7 +44,7 @@ const newId = () => {
   crypto.getRandomValues(a);
   return "MC-" + Array.from(a, (b) => b.toString(16).padStart(2, "0")).join("").toUpperCase();
 };
-const blank = (demo: boolean): Session => ({ id: "", startedAt: new Date(0), demo, context: null, raw: emptyRaw(), skipped: {}, results: null, summary: null, pdf: null });
+const blank = (demo: boolean): Session => ({ id: "", startedAt: new Date(0), demo, context: null, checklist: null, raw: emptyRaw(), skipped: {}, results: null, summary: null, pdf: null });
 
 interface Ctx {
   screen: Screen;
@@ -50,6 +54,7 @@ interface Ctx {
   endSession: (to: Screen) => void;
   setDemo: (d: boolean) => void;
   setContext: (c: AssessmentContext) => void;
+  setChecklist: (answers: ChecklistAnswers) => void;
   setRaw: <K extends keyof Raw>(k: K, v: Raw[K]) => void;
   skip: (k: TestId) => void;
   setAnalysis: (results: TestResult[], summary: Summary, pdf: Blob | null) => void;
@@ -79,6 +84,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setDemo: (demo) => setSession((s) => ({ ...s, demo })),
     // Editing context invalidates any previously generated PDF so it never shows stale values.
     setContext: (context) => setSession((s) => ({ ...s, context, pdf: null })),
+    setChecklist: (checklist) => setSession((s) => ({ ...s, checklist, pdf: null })),
     setRaw: (k, v) => setSession((s) => ({ ...s, raw: { ...s.raw, [k]: v }, skipped: { ...s.skipped, [k]: false } })),
     skip: (k) => setSession((s) => ({ ...s, raw: { ...s.raw, [k]: null }, skipped: { ...s.skipped, [k]: true } })),
     setAnalysis: (results, summary, pdf) => setSession((s) => ({ ...s, results, summary, pdf })),
@@ -90,7 +96,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     downloadPdf: async () => {
       let blob = session.pdf;
       if (!blob && session.results && session.summary) {
-        blob = await buildReportPdf({ id: session.id, startedAt: session.startedAt, demo: session.demo, context: session.context, results: session.results, summary: session.summary, demoProfile: session.demoProfile });
+        blob = await buildReportPdf({ id: session.id, startedAt: session.startedAt, demo: session.demo, context: session.context, checklist: session.checklist, results: session.results, summary: session.summary, demoProfile: session.demoProfile });
         setSession((s) => ({ ...s, pdf: blob }));
       }
       if (!blob) return;
