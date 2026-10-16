@@ -1,6 +1,7 @@
 import { LIMITATIONS, type Summary } from "./quality";
 import { assessResults, CONSULTATION_GUIDANCE, EXCLUSION_TEXT, fmtScore, MEDICAL_DISCLAIMER } from "./scoring";
 import { caffeineSummary, contextNotes, type AssessmentContext } from "./context";
+import type { ChecklistAnswers } from "./session";
 import { compareWithReference, nextStepFor, normalScoreComparison, NORMAL_SCORE_COLUMN, NORMAL_SCORE_NOTE, NORMAL_SCORE_TITLE, qualityText, REFERENCE_UNAVAILABLE_TITLE, TEST_EXPLANATIONS } from "./interpretation";
 import { COMPARISON_TEXT, CROSSING_TEXT, evaluateScreening, EXPERIMENTAL_NOTE, REFERRAL_RULE, STATUS_TEXT, THRESHOLDS } from "./thresholds";
 import { DEMO_PROFILES, type DemoProfileId } from "./demoProfiles";
@@ -10,7 +11,7 @@ const clean = (s: string) =>
   s.replace(/²/g, "^2").replace(/[—–]/g, "-").replace(/…/g, "...").replace(/°/g, " deg")
     .replace(/[“”]/g, '"').replace(/[‘’]/g, "'").replace(/[^\x20-\x7E]/g, "");
 
-export interface ReportInput { id: string; startedAt: Date; demo: boolean; context?: AssessmentContext | null; results: TestResult[]; summary: Summary; demoProfile?: DemoProfileId | undefined }
+export interface ReportInput { id: string; startedAt: Date; demo: boolean; context?: AssessmentContext | null; checklist?: ChecklistAnswers | null; results: TestResult[]; summary: Summary; demoProfile?: DemoProfileId | undefined }
 
 export async function buildReportPdf(r: ReportInput): Promise<Blob> {
   const { jsPDF } = await import("jspdf");
@@ -52,6 +53,20 @@ export async function buildReportPdf(r: ReportInput): Promise<Blob> {
   text(`Age: ${r.context ? r.context.age : "Not recorded"}`, 10);
   text(`Recent caffeine: ${r.context ? caffeineSummary(r.context) : "Not recorded"}`, 10);
   contextNotes(r.context ?? null).forEach((n) => text(n, 9, false, muted));
+  y += 3;
+  text("Preliminary Symptom Checklist (context only)", 13, true);
+  const checklistRows: [string, keyof ChecklistAnswers][] = [
+    ["Dream enactment", "dreamEnactment"],
+    ["Loss or reduction of smell", "smellLoss"],
+    ["Chronic constipation", "constipation"],
+    ["Slowness of movement or handwriting changes", "movementSlowness"],
+    ["Caffeine sensitivity or medication-related shaking", "caffeineOrMedication"],
+  ];
+  checklistRows.forEach(([label, key]) => {
+    const answer = r.checklist?.[key];
+    text(`${label}: ${answer === "yes" ? "Yes" : answer === "no" ? "No" : answer === "not_sure" ? "Not sure" : "Not recorded"}`, 9.5);
+  });
+  text("Informal checklist only; not a validated diagnostic questionnaire. Answers do not affect the screening outcome. Symptoms may have other causes; discuss concerns with a qualified healthcare professional.", 9, false, muted);
   y += 3;
   const A = assessResults(r.results);
   const O = evaluateScreening(A.tests, r.context?.age ?? null);
