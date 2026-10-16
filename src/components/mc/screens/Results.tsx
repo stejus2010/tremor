@@ -47,7 +47,7 @@ export function ProcessingScreen() {
         const summary = summarize(out);
         set(4, summary.retest.length ? "issue" : "done");
         set(5, "running");
-        const pdf = await buildReportPdf({ id: s.session.id, startedAt: s.session.startedAt, demo: s.session.demo, context: s.session.context, results: out, summary });
+        const pdf = await buildReportPdf({ id: s.session.id, startedAt: s.session.startedAt, demo: s.session.demo, context: s.session.context, checklist: s.session.checklist, results: out, summary });
         set(5, "done");
         if (cancel) return;
         s.setAnalysis(out, summary, pdf);
@@ -237,7 +237,7 @@ function NormalScoreComparison({ tests }: { tests: TestScore[] }) {
 
 export function ResultsScreen() {
   const s = useSession();
-  const { results, summary, startedAt, demo, context, demoProfile } = s.session;
+  const { results, summary, startedAt, demo, context, checklist, demoProfile } = s.session;
   if (!results || !summary) return null;
   const a = assessResults(results);
   const o = evaluateScreening(a.tests, context?.age ?? null);
@@ -275,6 +275,28 @@ export function ResultsScreen() {
         <p className="mt-4 border-t border-border pt-3 text-xs text-muted-foreground">{EXPERIMENTAL_NOTE}</p>
       </Card>
       {context && <p className="mt-3 text-sm text-muted-foreground">Age {context.age} · {caffeineSummary(context)}. Thresholds are not age-adjusted (no compatible age-specific reference data).</p>}
+
+      <Card className="mt-4">
+        <h2 className="font-semibold">Preliminary Symptom Checklist</h2>
+        <p className="mt-1 text-xs text-muted-foreground">Recorded for context only. These answers do not affect the screening outcome.</p>
+        {checklist ? (
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            {([
+              ["Dream enactment", checklist.dreamEnactment],
+              ["Loss or reduction of smell", checklist.smellLoss],
+              ["Chronic constipation", checklist.constipation],
+              ["Slowness of movement or handwriting changes", checklist.movementSlowness],
+              ["Caffeine sensitivity or medication-related shaking", checklist.caffeineOrMedication],
+            ] as const).map(([label, answer]) => (
+              <div key={label} className="flex items-start justify-between gap-3 rounded-xl border border-border p-3 text-sm">
+                <span>{label}</span>
+                <b className="shrink-0">{answer === "yes" ? "Yes" : answer === "no" ? "No" : "Not sure"}</b>
+              </div>
+            ))}
+          </div>
+        ) : <p className="mt-2 text-sm text-muted-foreground">No checklist answers recorded for this session (for example, a demo profile).</p>}
+        <p className="mt-3 text-xs text-muted-foreground">This informal checklist is not diagnostic. Symptoms may have other causes; discuss concerns with a healthcare professional.</p>
+      </Card>
 
       {/* 3. Test cards */}
       <h2 className="mt-8 text-xl font-semibold">Individual Tests</h2>
