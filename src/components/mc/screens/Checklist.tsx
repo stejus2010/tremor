@@ -24,7 +24,6 @@ const emptyAnswers = (): ChecklistAnswers => ({
   caffeineOrMedication: "not_sure",
 });
 
-const answerLabel = (value: ChecklistAnswer) => value === "yes" ? "Yes" : value === "no" ? "No" : "Not sure";
 
 export function ChecklistScreen() {
   const s = useSession();
