@@ -389,7 +389,7 @@ export function ReportScreen() {
       <TopBar onBack={() => s.go("results")} exit={false} right={<DownloadBtn variant="primary" />} />
       <article className="rounded-2xl bg-paper p-6 text-paper-foreground shadow-2xl sm:p-10">
         <header className="border-b border-paper-border pb-4">
-          <h1 className="text-2xl font-bold">Tremor · Movement Assessment Report</h1>
+          <h1 className="text-2xl font-bold">PARS · Parkinson’s Assessment and Recognition System Report</h1>
           <p className="text-sm text-paper-muted">Developed by Kinetiq</p>
           {demo && <p className="mt-1 font-bold text-warning">DEMO — synthetic data, not real measurements</p>}
           <div className="mt-3 grid grid-cols-2 gap-2 text-sm text-paper-muted sm:grid-cols-3">
@@ -421,7 +421,7 @@ export function ReportScreen() {
           <ul className="mt-1 list-disc pl-5 text-paper-muted">{LIMITATIONS.map((l) => <li key={l}>{l}</li>)}</ul>
           <p className="mt-3">{CONSULTATION_GUIDANCE}</p>
           <p className="mt-3 font-semibold">{MEDICAL_DISCLAIMER}</p>
-          <p className="mt-3 text-xs text-paper-muted">Tremor | Developed by Kinetiq</p>
+          <p className="mt-3 text-xs text-paper-muted">PARS | Developed by Kinetiq</p>
         </section>
       </article>
     </Page>
@@ -433,7 +433,7 @@ export function CompleteScreen() {
   return (
     <Page className="max-w-2xl">
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center py-4">
-        <span className="text-lg font-bold">Tremor</span>
+        <span className="text-lg font-bold">PARS</span>
         <Btn variant="ghost" aria-label="Return home" onClick={() => s.endSession("welcome")}><Home className="h-5 w-5" /></Btn>
       </header>
       <div className="mt-10 text-center">
