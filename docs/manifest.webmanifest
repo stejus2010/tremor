@@ -1,0 +1,21 @@
+{
+  "id": "./",
+  "name": "Tremor — Portable Movement Assessment",
+  "short_name": "Tremor",
+  "description": "Experimental tablet-based movement and voice assessment. Not a medical diagnosis.",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "fullscreen", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#f4f7fb",
+  "theme_color": "#050B14",
+  "icons": [
+    {
+      "src": "./tremor-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
