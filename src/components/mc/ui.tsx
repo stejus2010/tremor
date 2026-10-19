@@ -17,7 +17,7 @@ export function Logo() {
         </defs>
         <path d="M3 18c3 0 4-8 7-8s3 12 6 12 3-16 6-16 4 12 7 12" fill="none" stroke="url(#mcg)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-      <span className="text-lg font-bold tracking-tight">Tremor</span>
+      <span className="text-lg font-bold tracking-tight">PARS</span>
     </div>
   );
 }
