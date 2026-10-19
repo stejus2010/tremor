@@ -13,9 +13,9 @@ import { CompleteScreen, DetailsScreen, ProcessingScreen, ReportScreen, ResultsS
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Tremor — Portable Movement Assessment Prototype" },
+      { title: "PARS — Parkinson’s Assessment and Recognition System" },
       { name: "description", content: "Experimental tablet-based movement and voice assessment. Processed on your device. Not a medical diagnosis." },
-      { property: "og:title", content: "Tremor — Portable Movement Assessment" },
+      { property: "og:title", content: "PARS — Parkinson’s Assessment and Recognition System" },
       { property: "og:description", content: "Four guided tests, about 2 minutes, processed locally. Experimental, not a diagnosis." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
