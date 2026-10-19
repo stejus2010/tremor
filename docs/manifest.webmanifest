@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Tremor — Portable Movement Assessment",
-  "short_name": "Tremor",
+  "name": "PARS — Parkinson’s Assessment and Recognition System",
+  "short_name": "PARS",
   "description": "Experimental tablet-based movement and voice assessment. Not a medical diagnosis.",
   "start_url": "./?source=pwa",
   "scope": "./",
