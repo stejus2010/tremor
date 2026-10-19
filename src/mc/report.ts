@@ -38,7 +38,7 @@ export async function buildReportPdf(r: ReportInput): Promise<Blob> {
   doc.rect(0, 30, W, 1.2, "F");
   doc.setTextColor(243, 247, 252);
   doc.setFont("helvetica", "bold"); doc.setFontSize(18);
-  doc.text("Tremor by Kinetiq", M, 14);
+  doc.text("PARS by Kinetiq", M, 14);
   doc.setFont("helvetica", "normal"); doc.setFontSize(9);
   doc.text("Screening Report", W - M, 14, { align: "right" });
   doc.setFont("helvetica", "normal"); doc.setFontSize(10);
@@ -175,7 +175,7 @@ export async function buildReportPdf(r: ReportInput): Promise<Blob> {
   for (let i = 1; i <= pages; i++) {
     doc.setPage(i);
     doc.setFontSize(8); doc.setTextColor(...muted);
-    doc.text(clean(`Tremor | Developed by Kinetiq  -  ${r.id}${r.demo ? "  -  SIMULATED DEMO DATA" : ""}  -  Page ${i}/${pages}`), M, 290);
+    doc.text(clean(`PARS | Developed by Kinetiq  -  ${r.id}${r.demo ? "  -  SIMULATED DEMO DATA" : ""}  -  Page ${i}/${pages}`), M, 290);
   }
   return doc.output("blob");
 }
