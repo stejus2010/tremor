@@ -56,10 +56,10 @@ export const THRESHOLDS: Record<ScoredTestId, TestThreshold> = {
     ageBands: [],
   },
   tap: {
-    threshold: 50,
+    threshold: 60,
     comparison: "at_or_above",
     status: "provisional",
-    rationale: "Converted from the prototype placeholder of 20% inter-tap interval CV (20/40 x 100 = 50).",
+    rationale: "Raised to a provisional prototype threshold of 60/100 for the Tap Challenge at the project team’s request. This is an engineering choice, not a clinically validated cutoff.",
     candidateSource: "FINGER-TAPPING-PARKINSONISMS-DATABASE (github.com/innovation-center-etf) — not yet analysed; uses finger-tapping kinematics, not alternating screen taps.",
     ageBands: [],
   },
